@@ -72,7 +72,7 @@ module.exports = {
   ],
   devtool: process.env.WEBPACK_DEVTOOL || "eval-source-map",
   output: {
-    publicPath: "/static",
+    publicPath: "/static/",
     path: path.join(__dirname, "build"),
     filename: "bundle.js"
   },
