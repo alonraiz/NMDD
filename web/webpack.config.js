@@ -12,7 +12,8 @@ const loaders = [
     exclude: /(node_modules|bower_components|build\/)/,
     loader: "babel-loader",
     query: {
-      presets: ["react"]
+      presets: ["react"],
+      plugins: ["transform-decorators-legacy", "transform-class-properties", "transform-object-rest-spread"]
     }
   },
   {
