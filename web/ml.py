@@ -1,0 +1,2 @@
+class MachineLearningManager(object):
+    pass

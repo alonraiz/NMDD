@@ -1,0 +1,2 @@
+class ControllerManager(object):
+    pass
