@@ -5,12 +5,12 @@ import contextlib
 class State(object):
     def __init__(self):
         self._state = {}
-        self._handlers = []
+        self._handlers = set()
 
     @contextlib.contextmanager
     def on_notification(self, handler):
         # Register handler
-        self._handlers.append(handler)
+        self._handlers.add(handler)
 
         try:
             yield
@@ -26,3 +26,7 @@ class State(object):
 
     def serialize(self):
         return json.dumps(self._state)
+
+    @property
+    def state(self):
+        return self._state

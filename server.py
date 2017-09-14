@@ -48,7 +48,7 @@ def main():
     @sockets.route("/realtime")
     def ws_realtime(ws):
         def on_update():
-            ws.send("UPDATE")
+            ws.send(json.dumps(dict(state=state.state)))
 
         with state.on_notification(on_update):
             while not ws.closed:
@@ -60,7 +60,6 @@ def main():
 
     @app.route("/state")
     def get_state():
-        state.flush()
         return state.serialize()
 
     # Run server

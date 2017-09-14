@@ -27,6 +27,7 @@ export class App extends React.Component {
             <div className={Styles.logo}>
                 NMDD
                 <img src={LOGO} />
+                {}
             </div>
         );
     }
