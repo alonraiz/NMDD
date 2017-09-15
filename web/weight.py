@@ -30,6 +30,9 @@ class Weight(object):
         self.value = self.get_value()
         self.change = 0
 
+    def __repr__(self):
+        return "<Weight type={} value={}>".format(self.type, self.value)
+
 
 class DrinkWeights(object):
     def __init__(self, weights_dict=None):

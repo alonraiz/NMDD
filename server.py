@@ -19,6 +19,7 @@ import web
 ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 WEB_PATH = os.path.join(ROOT_PATH, "web")
 DATABASE_PATH = os.path.join(ROOT_PATH, "data", "nmdd.sqlite")
+BASELINE_PATH = os.path.join(ROOT_PATH, "data", "nmdd.baseline")
 
 MAPPING = {
     "White Rum": 0,
@@ -61,8 +62,18 @@ def main():
     # Initialize nmdd controller
     controller = web.controller.ControllerManager(state, [27, 17, 22])
 
+    # Load ml baseline
+    baseline = None
+    if os.path.exists(BASELINE_PATH):
+        baseline = web.ml.ExportedBaseline(open(BASELINE_PATH, "rt").read())
+
     # Initialize ml library
-    ml = web.ml.MachineLearningManager(state, lambda type, weight: type in MAPPING)
+    ml = web.ml.MachineLearningManager(state,
+                                       baseline=baseline,
+                                       drinks_filter=lambda type, weight: type in MAPPING)
+
+    # Export
+    ml.export(BASELINE_PATH)
 
     # Processing
     def process(action, data=None):
@@ -78,7 +89,7 @@ def main():
             drink_mapped = [(MAPPING[type], type, value) for type, value in drink_suggest]
             logging.info("Suggested drink %s", drink_suggest)
 
-            # Mix the drinkg
+            # Mix the drink
             controller.mix(drink_mapped)
 
             # Move to feedback
@@ -90,6 +101,9 @@ def main():
             ml.accept(
                 **{x.type:x.result for x in data}
             )
+
+            # Dump baseline
+            ml.export(BASELINE_PATH)
 
             # Move to capture
             #state.current.view = "capturing"

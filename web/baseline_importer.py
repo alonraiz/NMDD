@@ -1,3 +1,5 @@
+import json
+
 import pandas
 from .weight import Weight, DrinkWeights, ingredients_dict
 
@@ -6,13 +8,26 @@ tastes_list = ["Sweet", "Sour", "Bitter"]
 columns_dict = {"alcohol": 0, "juice": 2, "tastes": 2, "liquor": 3}
 
 
+class ExportedBaseline(object):
+    def __init__(self, serialized):
+        lines = [line for line in serialized.splitlines() if line]
+        data = json.loads(lines[-1]).get("weights", {})
+
+        self._weights = {
+            key:Weight(weight_type=key, weight_value=value) for key, value in data.items()
+        }
+
+    def get_ingredients_weights(self):
+        return self._weights
+
+
 class BaseLine(object):
     def __init__(self, excel_filepath):
         self.baseline_dataset = pandas.read_csv(excel_filepath)
         self.baseline_dataset.drop('Timestamp', axis=1, inplace=True)
 
     def count_ingredient(self, column_idx, name):
-        return self.baseline_dataset.iloc[:, column_idx].str.contains(name).sum()
+        return int(self.baseline_dataset.iloc[:, column_idx].str.contains(name).sum())
 
     def get_ingredients_weights_per_group(self, group_name):
         weights_dict = {}
