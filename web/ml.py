@@ -1,2 +1,6 @@
 class MachineLearningManager(object):
-    pass
+    def __init__(self, state):
+        self._state = state
+
+    def suggest(self):
+        return []

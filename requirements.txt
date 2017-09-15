@@ -8,6 +8,7 @@ greenlet==0.4.12
 itsdangerous==0.24
 Jinja2==2.9.6
 MarkupSafe==1.0
+munch==2.2.0
 pbr==3.1.1
 pytz==2017.2
 six==1.10.0

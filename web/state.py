@@ -2,9 +2,11 @@ import json
 import logging
 import contextlib
 
+import munch
+
 class State(object):
     def __init__(self):
-        self._state = {}
+        self._state = munch.Munch()
         self._handlers = set()
 
     @contextlib.contextmanager
@@ -28,5 +30,5 @@ class State(object):
         return json.dumps(self._state)
 
     @property
-    def state(self):
+    def current(self):
         return self._state

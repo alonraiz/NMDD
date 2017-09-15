@@ -4,12 +4,13 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 
-import sqlalchemy
 import flask
 import flask_sockets
+import sqlalchemy
 
-import gevent
-from gevent import pywsgi
+import munch
+
+from gevent import pywsgi, monkey
 from geventwebsocket.handler import WebSocketHandler
 
 import web
@@ -21,6 +22,9 @@ DATABASE_PATH = os.path.join(ROOT_PATH, "data", "nmdd.sqlite")
 
 
 def main():
+    # Monkey patch
+    monkey.patch_all()
+
     # Initialize flask app
     app = flask.Flask(__name__,
                       static_folder="web/build",
@@ -37,22 +41,64 @@ def main():
 
     # State manager
     state = web.state.State()
+    state.current.view = "idle"
 
     # Initialize nmdd controller
-    controller = web.controller.ControllerManager()
+    controller = web.controller.ControllerManager(state)
 
     # Initialize ml library
-    ml = web.ml.MachineLearningManager()
+    ml = web.ml.MachineLearningManager(state)
+
+    # Processing
+    def process(action, data=None):
+        logging.info("Processing action %s", action)
+
+        if action == "DRINK":
+            # Start drinking
+            state.current.view = "pouring"
+            state.flush()
+
+            # Get a drink from the ml
+            drink = ml.suggest()
+
+            # Mix the drinkg
+            controller.mix(drink)
+
+            # Move to feedback
+            state.current.view = "feedback"
+            state.flush()
+
+        elif action == "FEEDBACK":
+            # Move to capture
+            state.current.view = "capturing"
+            state.flush()
+
+        elif action == "DONE":
+            # Move to capture
+            state.current.view = "idle"
+            state.flush()
 
     # Configure main view
     @sockets.route("/realtime")
     def ws_realtime(ws):
         def on_update():
-            ws.send(json.dumps(dict(state=state.state)))
+            ws.send(json.dumps(dict(state=state.current)))
 
+        # Push initial
+        on_update()
+
+        # Wait for changes
         with state.on_notification(on_update):
             while not ws.closed:
-                ws.receive()
+                try:
+                    raw = ws.receive()
+                    if raw is None:
+                        continue
+                    message = munch.munchify(json.loads(raw))
+                    if "action" in message:
+                        process(message.action, message.data)
+                except:
+                    logging.exception("Failed processing message")
 
     @app.route("/")
     def get_index():
