@@ -59,10 +59,10 @@ def main():
     state.current.view = "idle"
 
     # Initialize nmdd controller
-    controller = web.controller.ControllerManager(state)
+    controller = web.controller.ControllerManager(state, [27, 17, 22])
 
     # Initialize ml library
-    ml = web.ml.MachineLearningManager(state)
+    ml = web.ml.MachineLearningManager(state, 3)
 
     # Processing
     def process(action, data=None):
