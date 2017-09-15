@@ -1,35 +1,10 @@
 import time
 import logging
 
+from .gpio import GPIO
+
 DRINK_ML_IN_SECOND = 3.7
 DRINK_SIZE_IN_ML = 60
-
-try:
-    import RPi.GPIO as GPIO
-except ImportError:
-    class GPIO(object):
-        BCM = 0
-        OUT = 0
-
-        @classmethod
-        def setmode(cls, mode):
-            pass
-
-        @classmethod
-        def setwarnings(cls, toggle):
-            pass
-
-        @classmethod
-        def setup(cls, pin, state):
-            pass
-
-        @classmethod
-        def output(cls, pin, state):
-            pass
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-
 
 class ControllerManager(object):
     def __init__(self, state, pins):

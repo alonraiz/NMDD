@@ -41,6 +41,10 @@ def main():
     # Monkey patch
     monkey.patch_all()
 
+    # Initialize gpio
+    web.gpio.GPIO.setmode(web.gpio.GPIO.BCM)
+    web.gpio.GPIO.setwarnings(False)
+
     # Initialize flask app
     app = flask.Flask(__name__,
                       static_folder="web/build",
@@ -75,6 +79,11 @@ def main():
     # Export
     ml.export(BASELINE_PATH)
 
+    # Led strip
+    leds = web.led.LedStrip(10, 11, 12)
+    leds.set_state(web.led.LedStrip.STATE.RANDOM)
+    leds.set_speed(web.led.LedStrip.SPEED.SLOW)
+
     # Processing
     def process(action, data=None):
         logging.info("Processing action %s", action)
@@ -83,6 +92,10 @@ def main():
             # Start drinking
             state.current.view = "pouring"
             state.flush()
+
+            # Red flash
+            leds.set_state(web.led.LedStrip.STATE.RED_FLASH)
+            leds.set_speed(web.led.LedStrip.SPEED.FAST)
 
             # Get a drink from the ml
             drink_suggest = ml.suggest()
@@ -95,6 +108,10 @@ def main():
             # Move to feedback
             state.current.view = "feedback"
             state.flush()
+
+            # Green flash
+            leds.set_state(web.led.LedStrip.STATE.GREEN_FLASH)
+            leds.set_speed(web.led.LedStrip.SPEED.FAST)
 
         elif action == "FEEDBACK":
             # Accept changes
@@ -109,6 +126,10 @@ def main():
             #state.current.view = "capturing"
             state.current.view = "idle"
             state.flush()
+
+            # Clear flash
+            leds.set_state(web.led.LedStrip.STATE.RANDOM)
+            leds.set_speed(web.led.LedStrip.SPEED.SLOW)
 
         elif action == "DONE":
             # Move to capture
