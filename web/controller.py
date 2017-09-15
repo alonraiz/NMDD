@@ -49,9 +49,9 @@ class ControllerManager(object):
         drink = drink[:len(self._pins)]
 
         # Normalize values
-        drink_total = sum(x[1] for x in drink)
-        values_percent = [(x[0], x[1]*100/drink_total) for x in drink]
-        values_ml = [(x[0], x[1]*DRINK_SIZE_IN_ML/100) for x in values_percent]
+        drink_total = sum(x[2] for x in drink)
+        values_percent = [(x[0], x[1], x[2]*100/drink_total) for x in drink]
+        values_ml = [(x[0], x[1], x[2]*DRINK_SIZE_IN_ML/100) for x in values_percent]
 
         logging.info("DRINKS %s", drink)
         logging.info("PERCENT %s", values_percent)
@@ -59,11 +59,11 @@ class ControllerManager(object):
 
         # Pour drinks
         for idx, value_entry in enumerate(values_ml):
-            value_pin_idx, value_ml = value_entry
+            value_pin_idx, value_type, value_ml = value_entry
             value_pin = self._pins[value_pin_idx]
 
             # Drink state
-            self._state.current.status = "Pouring drink %d [pin=%s, ml=%s]" % (idx+1, value_pin, value_ml)
+            self._state.current.status = "Pouring drink %d [drink=%s, ml=%s, pin=%s]" % (idx+1, value_type, value_ml, value_pin)
             self._state.flush()
 
             logging.info("Pouring drink %d [pin=%s]", idx+1, value_pin)

@@ -16,7 +16,7 @@ class State(object):
 
         try:
             yield
-        except:
+        finally:
             self._handlers.remove(handler)
 
     def flush(self):

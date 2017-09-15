@@ -75,7 +75,7 @@ def main():
 
             # Get a drink from the ml
             drink_suggest = ml.suggest()
-            drink_mapped = [(MAPPING[type], value) for type, value in drink_suggest]
+            drink_mapped = [(MAPPING[type], type, value) for type, value in drink_suggest]
             logging.info("Suggested drink %s", drink_suggest)
 
             # Mix the drinkg
