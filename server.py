@@ -22,20 +22,20 @@ DATABASE_PATH = os.path.join(ROOT_PATH, "data", "nmdd.sqlite")
 BASELINE_PATH = os.path.join(ROOT_PATH, "data", "nmdd.baseline")
 
 MAPPING = {
-    "White Rum": 2,
-    "Vodka": 3,
-    "Gin": 4,
-    "Pomegranate Juice": 25,
-    "Orange Juice": 8,
-    "Lemon Juice": 10,
-    "Apple Juice": 9,
-    "Crannberry Juice": 11,
-    "Coinntreau": 27,
-    "Campari": 13,
-    "White Dry Vermouth": 6,
-    "Red Sweet Vermouth": 17,
-    "Cherry liquor": 5,
-    #"Something Else": 22
+    "White Rum": 0,
+    "Vodka": 1,
+    "Gin": 2,
+    "Pomegranate Juice": 3,
+    "Orange Juice": 4,
+    "Lemon Juice": 5,
+    "Apple Juice": 6,
+    "Crannberry Juice": 7,
+    "Coinntreau": 8,
+    "Campari": 9,
+    "White Dry Vermouth": 10,
+    "Red Sweet Vermouth": 11,
+    "Cherry liquor": 12,
+    #"Something Else": 13
 }
 
 def main():
@@ -65,7 +65,9 @@ def main():
     state.current.view = "idle"
 
     # Initialize nmdd controller
-    controller = web.controller.ControllerManager(state, list(MAPPING.values()))
+    controller = web.controller.ControllerManager(state, [
+        2,3,4,25,8,10,9,11,27,13,6,17,5 #,22
+    ])
 
     # Load ml baseline
     baseline = None
