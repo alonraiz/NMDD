@@ -24,16 +24,16 @@ MAPPING = {
     "White Rum": 0,
     "Vodka": 1,
     "Gin": 2,
-    "Pomegranate Juice": 3,
-    "Orange Juice": 4,
-    "Lemon Juice": 5,
-    "Apple Juice": 6,
-    "Crannberry Juice": 7,
-    "Coinntreau": 8,
-    "Campari": 9,
-    "White Dry Vermouth": 10,
-    "Red Sweet Vermouth": 11,
-    "Cherry liquor": 12
+    # "Pomegranate Juice": 3,
+    # "Orange Juice": 4,
+    # "Lemon Juice": 5,
+    # "Apple Juice": 6,
+    # "Crannberry Juice": 7,
+    # "Coinntreau": 8,
+    # "Campari": 9,
+    # "White Dry Vermouth": 10,
+    # "Red Sweet Vermouth": 11,
+    # "Cherry liquor": 12
 }
 
 def main():
@@ -62,7 +62,7 @@ def main():
     controller = web.controller.ControllerManager(state, [27, 17, 22])
 
     # Initialize ml library
-    ml = web.ml.MachineLearningManager(state, 3)
+    ml = web.ml.MachineLearningManager(state, lambda type, weight: type in MAPPING)
 
     # Processing
     def process(action, data=None):
