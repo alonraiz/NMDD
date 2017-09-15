@@ -211,7 +211,7 @@ export class App extends React.Component {
         super(...props);
 
         this._ws = null;
-        this._ws_url = `ws://${document.location.host}/realtime`;
+        this._ws_url = `wss://${document.location.host}/realtime`;
         
         this.data = observable.shallowObject({
             state: null

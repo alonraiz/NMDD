@@ -109,7 +109,12 @@ def main():
         return state.serialize()
 
     # Run server
-    server = pywsgi.WSGIServer(("0.0.0.0", 5000), app, handler_class=WebSocketHandler, log=logging, error_log=logging)
+    server = pywsgi.WSGIServer(("0.0.0.0", 5000), app,
+                               handler_class=WebSocketHandler,
+                               log=logging,
+                               error_log=logging,
+                               keyfile="ssl.key",
+                               certfile="ssl.crt")
     server.serve_forever()
 
 if "__main__" == __name__:
