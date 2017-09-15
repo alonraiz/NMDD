@@ -74,7 +74,8 @@ class FeedbackQuestion extends React.Component {
                     <Button className={classnames({[Styles.feedbackSelected]: result === 4})} bsStyle="warning" bsSize="large" onClick={() => this._select(4)}>4</Button>
                     <Button className={classnames({[Styles.feedbackSelected]: result === 3})} bsStyle="danger" bsSize="large" onClick={() => this._select(3)}>3</Button>
                     <Button className={classnames({[Styles.feedbackSelected]: result === 2})} bsStyle="danger" bsSize="large" onClick={() => this._select(2)}>2</Button>
-                    <Button className={classnames({[Styles.feedbackSelected]: result === 1})} bsStyle="danger" bsSize="large" onClick={() => this._select(1)}>Terrible!<br/>1</Button><br/><hr/>
+                    <Button className={classnames({[Styles.feedbackSelected]: result === 1})} bsStyle="danger" bsSize="large" onClick={() => this._select(1)}>1</Button>
+                    <Button className={classnames({[Styles.feedbackSelected]: result === 0})} bsStyle="danger" bsSize="large" onClick={() => this._select(0)}>Terrible!<br/>0</Button><br/><hr/>
             </div>
         );
     }
@@ -91,11 +92,10 @@ class StateFeedback extends React.Component {
 
         this.data = observable.object({
             questions: [
-                {question: "Did you like your drink?", result: null},
-                {question: "Did you like the sourness of your drink?", result: null},
-                {question: "Did you like the sweetness of your drink?", result: null},
-                {question: "Did you like the bitterness of your drink?", result: null},
-                {question: "Did you like the strength of your drink?", result: null},
+                {type: "general", question: "Did you like your drink?", result: null},
+                {type: "sourness", question: "Did you like the sourness of your drink?", result: null},
+                {type: "sweetness", question: "Did you like the sweetness of your drink?", result: null},
+                {type: "strength", question: "Did you like the strength of your drink?", result: null},
             ]
         });
     }

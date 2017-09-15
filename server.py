@@ -20,6 +20,21 @@ ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 WEB_PATH = os.path.join(ROOT_PATH, "web")
 DATABASE_PATH = os.path.join(ROOT_PATH, "data", "nmdd.sqlite")
 
+MAPPING = {
+    "White Rum": 0,
+    "Vodka": 1,
+    "Gin": 2,
+    "Pomegranate Juice": 3,
+    "Orange Juice": 4,
+    "Lemon Juice": 5,
+    "Apple Juice": 6,
+    "Crannberry Juice": 7,
+    "Coinntreau": 8,
+    "Campari": 9,
+    "White Dry Vermouth": 10,
+    "Red Sweet Vermouth": 11,
+    "Cherry liquor": 12
+}
 
 def main():
     # Monkey patch
@@ -59,18 +74,26 @@ def main():
             state.flush()
 
             # Get a drink from the ml
-            drink = ml.suggest()
+            drink_suggest = ml.suggest()
+            drink_mapped = [(MAPPING[type], value) for type, value in drink_suggest]
+            logging.info("Suggested drink %s", drink_suggest)
 
             # Mix the drinkg
-            controller.mix(drink)
+            controller.mix(drink_mapped)
 
             # Move to feedback
             state.current.view = "feedback"
             state.flush()
 
         elif action == "FEEDBACK":
+            # Accept changes
+            ml.accept(
+                **{x.type:x.result for x in data}
+            )
+
             # Move to capture
-            state.current.view = "capturing"
+            #state.current.view = "capturing"
+            state.current.view = "idle"
             state.flush()
 
         elif action == "DONE":

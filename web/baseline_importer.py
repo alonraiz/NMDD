@@ -1,5 +1,6 @@
 import pandas
-from weight import Weight, DrinkWeights, ingredients_dict
+from .weight import Weight, DrinkWeights, ingredients_dict
+
 
 tastes_list = ["Sweet", "Sour", "Bitter"]
 columns_dict = {"alcohol": 0, "juice": 2, "tastes": 2, "liquor": 3}
@@ -18,7 +19,7 @@ class BaseLine(object):
         column_num = columns_dict[group_name]
         for name in ingredients_dict[group_name]:
             weights_dict[name] = Weight(weight_type=name,
-                                        weight_value=baseline.count_ingredient(column_idx=column_num, name=name))
+                                        weight_value=self.count_ingredient(column_idx=column_num, name=name))
         return weights_dict
 
     def get_ingredients_weights(self):

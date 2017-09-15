@@ -32,15 +32,19 @@ class Weight(object):
 
 
 class DrinkWeights(object):
-    def __init__(self, weights_dict={}):
-        self.weights_dict = weights_dict
+    def __init__(self, weights_dict=None):
+        self.weights_dict = weights_dict or {}
         self.changes_list = []
+
+    @property
+    def weights(self):
+        return [(x.type, x.get_value()) for x in self.weights_dict.values()]
 
     def generate_mutation(self, num_of_changes=2):
         for _ in range(num_of_changes):
             is_new_weight = False
             while not is_new_weight:
-                rand_weight = random.choice(self.weights_dict.values())
+                rand_weight = random.choice(list(self.weights_dict.values()))
                 if rand_weight not in self.changes_list:
                     is_new_weight = True
             rand_weight.gen_change()
@@ -56,3 +60,4 @@ class DrinkWeights(object):
             else:
                 change_percent *= (sweetness / 10)
             weight.accept_change(acceptance_strength=change_percent)
+            self.changes_list.clear()
