@@ -29,7 +29,9 @@ class StateIdle extends React.Component {
             <div className={Styles.logo}>
                 Dear NMDD, Make Me a Drink <br/><br/>
                 <Button bsStyle="danger" bsSize="large" style={{}} onClick={this._on_start_lucky}>I'm Feeling Lucky!</Button><br />
-                <Button bsStyle="danger" bsSize="large" onClick={this._on_start_best}>Give Me Your Best.</Button>
+                <Button bsStyle="danger" bsSize="large" onClick={this._on_start_best}>Give Me Your Best.</Button><br />
+                <Button bsStyle="danger" bsSize="large" onClick={this._on_start_pregnant}>I'm Pregnant.</Button><br />
+                <span style={{fontSize: 10}}>{this.props.state.latest}</span>
             </div>
         );
     }
@@ -41,6 +43,10 @@ class StateIdle extends React.Component {
 
     _on_start_best = () => {
         this.props.app.push("DRINK", {style: "BEST"});
+    };
+
+    _on_start_pregnant = () => {
+        this.props.app.push("DRINK", {style: "PREGNANT"});
     };
 }
 

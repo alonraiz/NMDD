@@ -1,5 +1,6 @@
 import os
 import json
+import random
 import logging
 logging.basicConfig(level=logging.INFO)
 
@@ -42,6 +43,8 @@ MAPPING = [
 MAPPING_PINS = [x[1] for x in MAPPING]
 MAPPING_KEY_TO_INDEX = {entry[0]:idx for idx,entry in enumerate(MAPPING)}
 
+NON_ALCOHOLIC = ["Pomegranate Juice", "Orange Juice", "Lemon Juice", "Apple Juice", "Crannberry Juice"]
+
 def main():
     # Monkey patch
     monkey.patch_all()
@@ -67,6 +70,7 @@ def main():
     # State manager
     state = web.state.State()
     state.current.view = "idle"
+    state.current.latest = None
 
     # Initialize nmdd controller
     controller = web.controller.ControllerManager(state, MAPPING_PINS)
@@ -89,6 +93,9 @@ def main():
     leds.set_state(web.led.LedStrip.STATE.RANDOM)
     leds.set_speed(web.led.LedStrip.SPEED.SLOW)
 
+    # Update last known
+    state.current.latest = "Last Known Good %s" % (",".join("%s (%s)" % (x[0], x[1]) for x in ml.current()))
+
     # Processing
     def process(action, data=None):
         logging.info("Processing action %s", action)
@@ -106,6 +113,12 @@ def main():
             if data.style == "LUCKY":
                 logging.info("Fetching LUCKY drink")
                 drink_suggest = ml.suggest()
+            elif data.style == "PREGNANT":
+                logging.info("Fetching PREGNANT drink")
+                drink_suggest = [
+                    (random.choice(NON_ALCOHOLIC), random.randint(0, 100))
+                    for _ in range(len(NON_ALCOHOLIC))
+                ]
             else:
                 logging.info("Fetching BEST drink")
                 drink_suggest = ml.current()
@@ -113,11 +126,14 @@ def main():
             drink_mapped = [(MAPPING_KEY_TO_INDEX[type], type, value) for type, value in drink_suggest]
             logging.info("Suggested drink %s", drink_suggest)
 
+            # Update latest
+            state.current.latest = "Last Known Good %s" % (",".join("%s (%s)" % (x[1], x[2]) for x in drink_mapped))
+
             # Mix the drink
             controller.mix(drink_mapped)
 
             # Move to feedback
-            if data.style == "BEST":
+            if data.style == "BEST" or data.style == "PREGNANT":
                 state.current.view = "idle"
             else:
                 state.current.view = "feedback"
