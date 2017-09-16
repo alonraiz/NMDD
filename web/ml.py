@@ -15,7 +15,7 @@ class MachineLearningManager(object):
         weights = {k:v for k,v in baseline.get_ingredients_weights().items() if drinks_filter(k, v)}
 
         logging.info("MachineLearning loading baseline %s", weights)
-        self._drinks = DrinkWeights(weights_dict=weights)
+        self._drinks = DrinkWeights(weights_dict=weights, change_strength=baseline.get_change_strength())
 
     def suggest(self):
         self._drinks.generate_mutation()
@@ -30,4 +30,4 @@ class MachineLearningManager(object):
 
         open(path, "at").write(json.dumps(dict(weights={
             weight_type:weight_value for weight_type, weight_value in self._drinks.weights
-        })) + "\n")
+        }, change_strength=self._drinks.change_strength)) + "\n")
