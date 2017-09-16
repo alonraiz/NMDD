@@ -21,22 +21,26 @@ WEB_PATH = os.path.join(ROOT_PATH, "web")
 DATABASE_PATH = os.path.join(ROOT_PATH, "data", "nmdd.sqlite")
 BASELINE_PATH = os.path.join(ROOT_PATH, "data", "nmdd.baseline")
 
-MAPPING = {
-    "White Rum": 0,
-    "Vodka": 1,
-    "Gin": 2,
-    "Pomegranate Juice": 3,
-    "Orange Juice": 4,
-    "Lemon Juice": 5,
-    "Apple Juice": 6,
-    "Crannberry Juice": 7,
-    "Coinntreau": 8,
-    "Campari": 9,
-    "White Dry Vermouth": 10,
-    "Red Sweet Vermouth": 11,
-    "Cherry liquor": 12,
-    #"Something Else": 13
-}
+
+# PIN LIST 2,3,4,25,8,10,9,11,27,13,6,17,5,22
+MAPPING = [
+    ("White Rum", 10), ##
+    ("Vodka", 2), ##
+    ("Gin", 13), ##
+    ("Pomegranate Juice", 11), ##
+    ("Orange Juice", 4), ##
+    ("Lemon Juice", 9), ##
+    ("Apple Juice", 27), ## Grapefruit
+    ("Crannberry Juice", 8), ##
+    ("Coinntreau", 22), ##
+    ("Campari", 6), ##
+    ("White Dry Vermouth", 3), ##
+    ("Red Sweet Vermouth", 25), ##
+    ("Cherry liquor", 5), ##
+    #("Something Else", 13)
+]
+MAPPING_PINS = [x[1] for x in MAPPING]
+MAPPING_KEY_TO_INDEX = {entry[0]:idx for idx,entry in enumerate(MAPPING)}
 
 def main():
     # Monkey patch
@@ -65,9 +69,7 @@ def main():
     state.current.view = "idle"
 
     # Initialize nmdd controller
-    controller = web.controller.ControllerManager(state, [
-        2,3,4,25,8,10,9,11,27,13,6,17,5 #,22
-    ])
+    controller = web.controller.ControllerManager(state, MAPPING_PINS)
 
     # Load ml baseline
     baseline = None
@@ -77,7 +79,7 @@ def main():
     # Initialize ml library
     ml = web.ml.MachineLearningManager(state,
                                        baseline=baseline,
-                                       drinks_filter=lambda type, weight: type in MAPPING)
+                                       drinks_filter=lambda type, weight: type in MAPPING_KEY_TO_INDEX)
 
     # Export
     ml.export(BASELINE_PATH)
@@ -108,7 +110,7 @@ def main():
                 logging.info("Fetching BEST drink")
                 drink_suggest = ml.current()
 
-            drink_mapped = [(MAPPING[type], type, value) for type, value in drink_suggest]
+            drink_mapped = [(MAPPING_KEY_TO_INDEX[type], type, value) for type, value in drink_suggest]
             logging.info("Suggested drink %s", drink_suggest)
 
             # Mix the drink
