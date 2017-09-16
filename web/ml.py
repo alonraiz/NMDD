@@ -14,11 +14,14 @@ class MachineLearningManager(object):
 
         weights = {k:v for k,v in baseline.get_ingredients_weights().items() if drinks_filter(k, v)}
 
-        logging.info("MachineLearning loading baseline %s", weights)
+        logging.info("MachineLearning loading baseline change=%s weights=%s", baseline.get_change_strength(), weights)
         self._drinks = DrinkWeights(weights_dict=weights, change_strength=baseline.get_change_strength())
 
     def suggest(self):
         self._drinks.generate_mutation()
+        return self._drinks.weights
+
+    def current(self):
         return self._drinks.weights
 
     def accept(self, *, general, sweetness, sourness, strength):

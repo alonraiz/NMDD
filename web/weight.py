@@ -24,7 +24,7 @@ class Weight(object):
     def gen_change(self, change=10):
         self.is_negative_change = random.choice([True, False])
         if self.is_negative_change:
-            self.change = -change if self.value > abs(self.change) else -self.value
+            self.change = -change if self.value > abs(change) else -self.value
         else:
             self.change = change
 

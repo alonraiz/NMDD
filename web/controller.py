@@ -4,7 +4,7 @@ import logging
 from .gpio import GPIO
 
 DRINK_ML_IN_SECOND = 3.7
-DRINK_SIZE_IN_ML = 60
+DRINK_SIZE_IN_ML = 30
 
 class ControllerManager(object):
     def __init__(self, state, pins):

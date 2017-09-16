@@ -50,9 +50,9 @@ class LedStrip(object):
         self._tick_size_in_seconds = self.TICK_TIME_IN_SECONDS
 
     def _task(self):
-        logging.info("LesStrip starting")
+        logging.debug("LesStrip starting")
         while True:
-            logging.info("LesStrip loop")
+            logging.debug("LesStrip loop")
             if self._state == self.STATE.OFF:
                 pass
 

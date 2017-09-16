@@ -1,7 +1,7 @@
 import os
 import json
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 import flask
@@ -101,7 +101,13 @@ def main():
             leds.set_speed(web.led.LedStrip.SPEED.FAST)
 
             # Get a drink from the ml
-            drink_suggest = ml.suggest()
+            if data.style == "LUCKY":
+                logging.info("Fetching LUCKY drink")
+                drink_suggest = ml.suggest()
+            else:
+                logging.info("Fetching BEST drink")
+                drink_suggest = ml.current()
+
             drink_mapped = [(MAPPING[type], type, value) for type, value in drink_suggest]
             logging.info("Suggested drink %s", drink_suggest)
 
@@ -109,7 +115,10 @@ def main():
             controller.mix(drink_mapped)
 
             # Move to feedback
-            state.current.view = "feedback"
+            if data.style == "BEST":
+                state.current.view = "idle"
+            else:
+                state.current.view = "feedback"
             state.flush()
 
             # Green flash

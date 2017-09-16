@@ -28,15 +28,20 @@ class StateIdle extends React.Component {
         return (
             <div className={Styles.logo}>
                 Dear NMDD, Make Me a Drink <br/><br/>
-                <Button bsStyle="danger" bsSize="large" onClick={this.triggerDrink}>Start</Button>
+                <Button bsStyle="danger" bsSize="large" style={{}} onClick={this._on_start_lucky}>I'm Feeling Lucky!</Button><br />
+                <Button bsStyle="danger" bsSize="large" onClick={this._on_start_best}>Give Me Your Best.</Button>
             </div>
         );
     }
 
 
-    triggerDrink = () => {
-        this.props.app.push("DRINK");
-    }
+    _on_start_lucky = () => {
+        this.props.app.push("DRINK", {style: "LUCKY"});
+    };
+
+    _on_start_best = () => {
+        this.props.app.push("DRINK", {style: "BEST"});
+    };
 }
 
 class StatePouring extends React.Component {
