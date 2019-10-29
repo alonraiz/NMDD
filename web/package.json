@@ -31,7 +31,7 @@
     "webpack-dashboard": "^1.0.0-5"
   },
   "devDependencies": {
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.13"
   },
   "author": "",
   "license": "GPL"
